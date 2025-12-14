@@ -1,0 +1,808 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Encuesta de Satisfacción - Servicio Técnico</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            padding: 40px;
+        }
+
+        .admin-panel {
+            background: #f8f9fa;
+            padding: 30px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+        }
+
+        .admin-buttons {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .admin-btn {
+            padding: 20px;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.1em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-encuesta {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-resultados {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+        }
+
+        .admin-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+        }
+
+        h1 {
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 2.2em;
+        }
+
+        .subtitle {
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 1.1em;
+        }
+
+        .pregunta {
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 15px;
+            margin-bottom: 25px;
+            border: 2px solid #e9ecef;
+        }
+
+        .pregunta h3 {
+            color: #333;
+            margin-bottom: 15px;
+            font-size: 1.1em;
+            line-height: 1.5;
+        }
+
+        .opciones {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .opcion-label {
+            display: flex;
+            align-items: center;
+            padding: 15px;
+            background: white;
+            border: 2px solid #dee2e6;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .opcion-label:hover {
+            border-color: #667eea;
+            background: #f0f4ff;
+        }
+
+        .opcion-label.selected {
+            background: #e0e7ff;
+            border-color: #667eea;
+            border-width: 3px;
+        }
+
+        .opcion-label input[type="radio"] {
+            margin-right: 12px;
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+        }
+
+        .opcion-label span {
+            color: #333;
+            font-size: 1em;
+        }
+
+        .error-mensaje {
+            background: #fee;
+            color: #c00;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            border: 2px solid #fcc;
+            display: none;
+            font-weight: bold;
+        }
+
+        .exito-mensaje {
+            background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%);
+            color: #155724;
+            padding: 60px 40px;
+            border-radius: 20px;
+            text-align: center;
+            border: 3px solid #28a745;
+            display: none;
+            box-shadow: 0 10px 30px rgba(40, 167, 69, 0.3);
+        }
+
+        .exito-mensaje h2 {
+            font-size: 2.5em;
+            margin-bottom: 20px;
+        }
+
+        .exito-mensaje p {
+            font-size: 1.3em;
+            line-height: 1.6;
+        }
+
+        .btn-enviar {
+            width: 100%;
+            padding: 18px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.3em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 20px;
+        }
+
+        .btn-enviar:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-volver {
+            width: 100%;
+            padding: 15px;
+            background: #6c757d;
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.1em;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 20px;
+        }
+
+        .btn-volver:hover {
+            background: #5a6268;
+        }
+
+        .resultados-container {
+            display: none;
+        }
+
+        .resultado-pregunta {
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 15px;
+            margin-bottom: 25px;
+        }
+
+        .resultado-pregunta h3 {
+            color: #333;
+            margin-bottom: 20px;
+            font-size: 1.1em;
+        }
+
+        .barra-container {
+            margin-bottom: 15px;
+        }
+
+        .barra-label {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            color: #555;
+        }
+
+        .barra-fondo {
+            width: 100%;
+            height: 30px;
+            background: #e9ecef;
+            border-radius: 15px;
+            overflow: hidden;
+        }
+
+        .barra-relleno {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+            transition: width 0.5s ease;
+            display: flex;
+            align-items: center;
+            padding-left: 10px;
+            color: white;
+            font-weight: bold;
+        }
+
+        .total-respuestas {
+            background: #667eea;
+            color: white;
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 30px;
+            text-align: center;
+            font-size: 1.3em;
+            font-weight: bold;
+        }
+
+        #vistaEncuesta {
+            display: block;
+        }
+
+        #vistaAdmin, #vistaResultados, #vistaLogin {
+            display: none;
+        }
+
+        .login-container {
+            max-width: 400px;
+            margin: 100px auto;
+            text-align: center;
+        }
+
+        .login-box {
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+        }
+
+        .login-input {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #dee2e6;
+            border-radius: 10px;
+            font-size: 1em;
+            margin-bottom: 15px;
+        }
+
+        .btn-login {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1em;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .btn-admin-flotante {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            font-size: 1.5em;
+            cursor: pointer;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+            z-index: 1000;
+        }
+
+        .btn-admin-flotante:hover {
+            transform: scale(1.1);
+        }
+
+        .info-box {
+            background: #e7f3ff;
+            border-left: 4px solid #667eea;
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px;
+            }
+
+            h1 {
+                font-size: 1.8em;
+            }
+
+            .admin-buttons {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- BOTÓN FLOTANTE PARA ACCEDER AL ADMIN -->
+    <button class="btn-admin-flotante" onclick="mostrarLogin()" title="Acceso Admin">🔐</button>
+
+    <!-- VISTA LOGIN ADMIN -->
+    <div id="vistaLogin" class="login-container">
+        <div class="login-box">
+            <h2 style="margin-bottom: 20px; color: #333;">🔒 Acceso Admin</h2>
+            <input type="password" id="passwordAdmin" class="login-input" placeholder="Ingresa la contraseña" onkeypress="if(event.key==='Enter') validarPassword()">
+            <button class="btn-login" onclick="validarPassword()">Ingresar</button>
+            <p id="errorLogin" style="color: red; margin-top: 10px; display: none;">Contraseña incorrecta</p>
+            <button class="btn-volver" onclick="volverEncuesta()" style="margin-top: 15px;">Volver a la encuesta</button>
+        </div>
+    </div>
+
+    <div class="container">
+        <!-- VISTA ADMIN -->
+        <div id="vistaAdmin">
+            <h1>📊 Panel de Administración</h1>
+            <p class="subtitle">Gestiona tu encuesta de satisfacción</p>
+            
+            <div class="admin-panel">
+                <div class="info-box">
+                    <strong>Total de respuestas recibidas: <span id="totalRespuestas">0</span></strong>
+                </div>
+                
+                <div class="admin-buttons">
+                    <button class="admin-btn btn-encuesta" onclick="mostrarEncuesta()">
+                        📝 Ver Encuesta
+                    </button>
+                    <button class="admin-btn btn-resultados" onclick="mostrarResultados()">
+                        📈 Ver Resultados
+                    </button>
+                </div>
+            </div>
+
+            <div class="info-box">
+                <strong>💡LAS ESTADISTICAS</strong><br>
+                • CANTIDAD<br>
+                • RESPUESTAS
+                • PORCENTAJE
+            </div>
+        </div>
+
+        <!-- VISTA ENCUESTA -->
+        <div id="vistaEncuesta">
+            <h1>Encuesta de Emprendimiento - Soporte Técnico</h1>
+            <p class="subtitle">Ayúdanos a conocer tus necesidades en servicios técnicos</p>
+
+            <div class="exito-mensaje" id="mensajeExito">
+                <h2>✅ ¡Gracias por tu respuesta!</h2>
+                <p style="font-size: 1.2em; margin-top: 15px;">Tu opinión es muy importante para nosotros.</p>
+                <p style="margin-top: 10px;">Tus respuestas han sido registradas exitosamente.</p>
+            </div>
+
+            <div class="error-mensaje" id="mensajeError">
+                ⚠️ Por favor responde todas las preguntas antes de enviar
+            </div>
+
+            <form id="formularioEncuesta">
+                <!-- Las preguntas se generan dinámicamente con JavaScript -->
+            </form>
+
+            <button class="btn-enviar" onclick="enviarEncuesta()">Enviar Encuesta</button>
+            <button class="btn-volver" onclick="cerrarSesion()">Cerrar Sesión</button>
+        </div>
+
+        <!-- VISTA RESULTADOS -->
+        <div id="vistaResultados" class="resultados-container">
+            <h1>📊 Resultados de la Encuesta</h1>
+            <p class="subtitle">Análisis de necesidades del mercado</p>
+
+            <div class="total-respuestas">
+                Total de respuestas: <span id="totalRespuestasResultados">0</span>
+            </div>
+
+            <div id="contenedorResultados">
+                <!-- Los resultados se generan dinámicamente -->
+            </div>
+
+            <button class="btn-volver" onclick="cerrarSesion()">Volver a la Encuesta</button>
+        </div>
+    </div>
+
+    <script>
+        // ============================================
+        // CONFIGURACIÓN DE BASE DE DATOS
+        // ============================================
+        const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzdrY-uBI3ItiLkn4AVzj0ZsSN30Q-4A2I454MIDCpNRZJZJCrvV0yHCpAba6vZwjHT/exec"; // PEGA AQUÍ LA URL DE TU GOOGLE SCRIPT
+        
+        // ============================================
+        // CONFIGURACIÓN DE CONTRASEÑA ADMIN
+        // ============================================
+        const PASSWORD_ADMIN = "larojaesgood"; // CAMBIA ESTA CONTRASEÑA
+
+        // ============================================
+        // CONFIGURACIÓN DE PREGUNTAS
+        // ============================================
+        const preguntas = [
+            {
+                id: 1,
+                texto: "¿Con qué frecuencia tiene problemas técnicos con sus dispositivos (computadora, celular, tablet)?",
+                opciones: [
+                    "Muy frecuente (cada semana)",
+                    "Frecuente (cada mes)",
+                    "Ocasional (cada 3-6 meses)",
+                    "Rara vez (1 vez al año)",
+                    "Nunca"
+                ]
+            },
+            {
+                id: 2,
+                texto: "Cuando tiene un problema técnico, ¿qué tan difícil le resulta resolverlo por su cuenta?",
+                opciones: [
+                    "Muy difícil, no puedo resolverlo",
+                    "Difícil, me toma mucho tiempo",
+                    "Moderado, a veces puedo",
+                    "Fácil, casi siempre puedo",
+                    "Muy fácil, siempre lo resuelvo"
+                ]
+            },
+            {
+                id: 3,
+                texto: "¿Ha contratado servicios de soporte técnico anteriormente?",
+                opciones: [
+                    "Sí, muchas veces (más de 5)",
+                    "Sí, varias veces (3-5)",
+                    "Sí, pocas veces (1-2)",
+                    "No, pero me gustaría",
+                    "No, y no me interesa"
+                ]
+            },
+            {
+                id: 4,
+                texto: "Si hubiera un nuevo servicio de soporte técnico confiable en su zona, ¿qué tan probable es que lo contrate?",
+                opciones: [
+                    "Muy probable",
+                    "Probable",
+                    "Posiblemente",
+                    "Poco probable",
+                    "Nada probable"
+                ]
+            },
+            {
+                id: 5,
+                texto: "¿Cuánto estaría dispuesto a pagar por una visita técnica para resolver problemas comunes (virus, lentitud, instalaciones)?",
+                opciones: [
+                    "Menos de $10",
+                    "Entre $10 y $20",
+                    "Entre $20 y $30",
+                    "Entre $30 y $50",
+                    "Más de $50"
+                ]
+            },
+            {
+                id: 6,
+                texto: "¿Qué modalidad de servicio preferiría?",
+                opciones: [
+                    "Servicio a domicilio/oficina",
+                    "Llevar el equipo a un taller",
+                    "Soporte remoto por internet",
+                    "Servicio inmediato (urgencias)",
+                    "Cualquier modalidad me sirve"
+                ]
+            },
+            {
+                id: 7,
+                texto: "¿Qué tan importante es para usted que el servicio ofrezca garantía?",
+                opciones: [
+                    "Extremadamente importante",
+                    "Muy importante",
+                    "Moderadamente importante",
+                    "Poco importante",
+                    "No es importante"
+                ]
+            },
+            {
+                id: 8,
+                texto: "¿Contrataría un servicio técnico que está empezando si ofrece precios más bajos que la competencia?",
+                opciones: [
+                    "Definitivamente sí",
+                    "Probablemente sí",
+                    "Tal vez, con dudas",
+                    "Probablemente no",
+                    "Definitivamente no"
+                ]
+            },
+            {
+                id: 9,
+                texto: "¿Qué tan rápido necesitaría que atiendan su problema técnico?",
+                opciones: [
+                    "Inmediatamente (en horas)",
+                    "El mismo día",
+                    "En 1-2 días",
+                    "En 3-5 días",
+                    "No tengo prisa"
+                ]
+            },
+            {
+                id: 10,
+                texto: "¿Por qué medio preferiría contactar al servicio técnico?",
+                opciones: [
+                    "WhatsApp",
+                    "Llamada telefónica",
+                    "Facebook/Instagram",
+                    "Correo electrónico",
+                    "Sitio web/formulario online"
+                ]
+            }
+        ];
+
+        // ============================================
+        // FUNCIONES DE AUTENTICACIÓN
+        // ============================================
+
+        function mostrarLogin() {
+            document.getElementById('vistaLogin').style.display = 'block';
+            document.querySelector('.container').style.display = 'none';
+            document.getElementById('passwordAdmin').value = '';
+            document.getElementById('errorLogin').style.display = 'none';
+        }
+
+        function validarPassword() {
+            const password = document.getElementById('passwordAdmin').value;
+            if (password === PASSWORD_ADMIN) {
+                document.getElementById('vistaLogin').style.display = 'none';
+                document.querySelector('.container').style.display = 'block';
+                mostrarAdmin();
+            } else {
+                document.getElementById('errorLogin').style.display = 'block';
+            }
+        }
+
+        function mostrarAdmin() {
+            document.getElementById('vistaAdmin').style.display = 'block';
+            document.getElementById('vistaEncuesta').style.display = 'none';
+            document.getElementById('vistaResultados').style.display = 'none';
+            actualizarContadorAdmin();
+        }
+
+        function volverEncuesta() {
+            document.getElementById('vistaLogin').style.display = 'none';
+            document.querySelector('.container').style.display = 'block';
+            document.getElementById('vistaEncuesta').style.display = 'block';
+            document.getElementById('vistaAdmin').style.display = 'none';
+            document.getElementById('vistaResultados').style.display = 'none';
+        }
+
+        function cerrarSesion() {
+            document.getElementById('vistaAdmin').style.display = 'none';
+            document.getElementById('vistaResultados').style.display = 'none';
+            document.getElementById('vistaEncuesta').style.display = 'block';
+        }
+
+        // ============================================
+        // FUNCIONES PRINCIPALES
+        // ============================================
+
+        // Generar el formulario dinámicamente
+        function generarFormulario() {
+            const formulario = document.getElementById('formularioEncuesta');
+            formulario.innerHTML = '';
+
+            preguntas.forEach(pregunta => {
+                const divPregunta = document.createElement('div');
+                divPregunta.className = 'pregunta';
+                
+                const titulo = document.createElement('h3');
+                titulo.textContent = `${pregunta.id}. ${pregunta.texto}`;
+                divPregunta.appendChild(titulo);
+
+                const divOpciones = document.createElement('div');
+                divOpciones.className = 'opciones';
+
+                pregunta.opciones.forEach(opcion => {
+                    const label = document.createElement('label');
+                    label.className = 'opcion-label';
+                    
+                    const radio = document.createElement('input');
+                    radio.type = 'radio';
+                    radio.name = `pregunta${pregunta.id}`;
+                    radio.value = opcion;
+                    radio.onclick = function() {
+                        // Remover selección de otros labels
+                        const labels = divOpciones.querySelectorAll('.opcion-label');
+                        labels.forEach(l => l.classList.remove('selected'));
+                        // Agregar selección al label actual
+                        label.classList.add('selected');
+                    };
+
+                    const span = document.createElement('span');
+                    span.textContent = opcion;
+
+                    label.appendChild(radio);
+                    label.appendChild(span);
+                    divOpciones.appendChild(label);
+                });
+
+                divPregunta.appendChild(divOpciones);
+                formulario.appendChild(divPregunta);
+            });
+        }
+
+        // Mostrar vista de encuesta
+        function mostrarEncuesta() {
+            document.getElementById('vistaAdmin').style.display = 'none';
+            document.getElementById('vistaResultados').style.display = 'none';
+            document.getElementById('vistaEncuesta').style.display = 'block';
+            document.getElementById('mensajeExito').style.display = 'none';
+            document.getElementById('mensajeError').style.display = 'none';
+            generarFormulario();
+        }
+
+        // Mostrar vista de resultados
+        function mostrarResultados() {
+            document.getElementById('vistaAdmin').style.display = 'none';
+            document.getElementById('vistaEncuesta').style.display = 'none';
+            document.getElementById('vistaResultados').style.display = 'block';
+            generarResultados();
+        }
+
+        // Volver al panel admin
+        function volverAdmin() {
+            document.getElementById('vistaAdmin').style.display = 'block';
+            document.getElementById('vistaEncuesta').style.display = 'none';
+            document.getElementById('vistaResultados').style.display = 'none';
+            actualizarContadorAdmin();
+        }
+        function enviarEncuesta() {
+            const respuestas = {};
+            let todasRespondidas = true;
+
+            // Validar que todas las preguntas estén respondidas
+            preguntas.forEach(pregunta => {
+                const seleccionada = document.querySelector(`input[name="pregunta${pregunta.id}"]:checked`);
+                if (seleccionada) {
+                    respuestas[pregunta.id] = seleccionada.value;
+                } else {
+                    todasRespondidas = false;
+                }
+            });
+
+            if (!todasRespondidas) {
+                document.getElementById('mensajeError').style.display = 'block';
+                window.scrollTo(0, 0);
+                return;
+            }
+
+            // Guardar en localStorage
+            const encuestas = JSON.parse(localStorage.getItem('encuestas') || '[]');
+            encuestas.push({
+                fecha: new Date().toLocaleString('es-EC'),
+                respuestas: respuestas
+            });
+            localStorage.setItem('encuestas', JSON.stringify(encuestas));
+
+            // Mostrar mensaje de éxito
+            document.getElementById('mensajeError').style.display = 'none';
+            document.getElementById('mensajeExito').style.display = 'block';
+            document.getElementById('formularioEncuesta').style.display = 'none';
+            window.scrollTo(0, 0);
+
+            // Volver a la encuesta después de 3 segundos
+            setTimeout(() => {
+                document.getElementById('mensajeExito').style.display = 'none';
+                document.getElementById('formularioEncuesta').style.display = 'block';
+                generarFormulario(); // Regenerar formulario limpio
+            }, 3000);
+        }
+
+        // Generar resultados
+        function generarResultados() {
+            const contenedor = document.getElementById('contenedorResultados');
+            contenedor.innerHTML = '<div class="info-box">Cargando datos...</div>';
+
+            // Cargar datos desde Google Sheets
+            fetch(GOOGLE_SCRIPT_URL)
+                .then(response => response.json())
+                .then(encuestas => {
+                    contenedor.innerHTML = '';
+                    document.getElementById('totalRespuestasResultados').textContent = encuestas.length;
+
+                    if (encuestas.length === 0) {
+                        contenedor.innerHTML = '<div class="info-box">No hay respuestas todavía. ¡Sé el primero en responder!</div>';
+                        return;
+                    }
+
+                    preguntas.forEach(pregunta => {
+                        const divResultado = document.createElement('div');
+                        divResultado.className = 'resultado-pregunta';
+
+                        const titulo = document.createElement('h3');
+                        titulo.textContent = `${pregunta.id}. ${pregunta.texto}`;
+                        divResultado.appendChild(titulo);
+
+                        // Contar respuestas para cada opción
+                        const conteos = {};
+                        pregunta.opciones.forEach(opcion => conteos[opcion] = 0);
+
+                        encuestas.forEach(encuesta => {
+                            const respuesta = encuesta.respuestas[pregunta.id];
+                            if (respuesta && conteos[respuesta] !== undefined) {
+                                conteos[respuesta]++;
+                            }
+                        });
+
+                        // Crear barras para cada opción
+                        pregunta.opciones.forEach(opcion => {
+                            const cantidad = conteos[opcion];
+                            const porcentaje = encuestas.length > 0 ? (cantidad / encuestas.length * 100).toFixed(1) : 0;
+
+                            const divBarra = document.createElement('div');
+                            divBarra.className = 'barra-container';
+
+                            const divLabel = document.createElement('div');
+                            divLabel.className = 'barra-label';
+                            divLabel.innerHTML = `<span>${opcion}</span><span>${cantidad} (${porcentaje}%)</span>`;
+
+                            const divFondo = document.createElement('div');
+                            divFondo.className = 'barra-fondo';
+
+                            const divRelleno = document.createElement('div');
+                            divRelleno.className = 'barra-relleno';
+                            divRelleno.style.width = porcentaje + '%';
+
+                            divFondo.appendChild(divRelleno);
+                            divBarra.appendChild(divLabel);
+                            divBarra.appendChild(divFondo);
+                            divResultado.appendChild(divBarra);
+                        });
+
+                        contenedor.appendChild(divResultado);
+                    });
+                })
+                .catch(error => {
+                    console.error('Error al cargar resultados:', error);
+                    contenedor.innerHTML = '<div class="error-mensaje" style="display: block;">Error al cargar los resultados. Verifica la URL del script.</div>';
+                });
+        }
+
+        // Actualizar contador en admin
+        function actualizarContadorAdmin() {
+            fetch(GOOGLE_SCRIPT_URL)
+                .then(response => response.json())
+                .then(encuestas => {
+                    document.getElementById('totalRespuestas').textContent = encuestas.length;
+                })
+                .catch(error => {
+                    console.error('Error al cargar contador:', error);
+                    document.getElementById('totalRespuestas').textContent = '?';
+                });
+        }
+
+        // Inicializar al cargar la página
+        window.onload = function() {
+            actualizarContadorAdmin();
+            generarFormulario(); // Generar encuesta al cargar
+            document.getElementById('vistaEncuesta').style.display = 'block';
+        };
+    </script>
+</body>
+</html>
